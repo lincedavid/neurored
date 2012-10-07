@@ -45,4 +45,4 @@ objecto = neurona(int(argv[1]), float(argv[2]))
 #print a
 #print b
 #print c
-
+#####
