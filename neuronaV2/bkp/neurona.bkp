@@ -1,0 +1,189 @@
+#!/usr/bin/python
+
+import random
+import numpy
+import sys
+
+class Perceptron(self, size):
+    def __init__(self):
+        pass
+
+class Layer:
+    def __init__(self, neuronSize, learningRate, layerSize):
+        self.size = layerSize
+        self.neurons = list()
+
+        for a in range(self.size):
+            self.addNeuron(a, neuronSize, learningRate)
+            
+        return
+
+    def addNeuron(self, ID, neuronSize, learningRate):
+        neuron = Neuron(ID, neuronSize, learningRate)
+        self.neurons.append(neuron)
+        return
+
+    def setVector(self, vector):
+        self.vector = vector
+        return
+
+    def getVector(self, size):
+        return self.vector
+
+    def process(self):
+        self.response = list()
+        for neuron in self.neurons:
+            self.response.append(neuron.start(self.vector))
+        print "Layer response >> %s\n" %(self.response)
+        return
+
+    def learn(self, vector):
+        for a, neuron in enumerate(self.neurons):
+            neuron.learn(vector[a])
+        return
+
+    def start(self, vector):
+        self.setVector(vector)
+        if(self.vector != 0):
+            self.process()
+        else:
+            print "[O] Finishing...\n"
+            return
+    
+
+class Neuron:
+    def __init__(self, ID, size, learningRate):
+        self.id = ID
+        self.size = size
+        self.learningRate = learningRate
+        self.weights = self.generateWeights(self.size + 1)
+        self.threshold = self.weights[-1]
+
+    def generateWeights(self, size):
+        weights = list()
+        for i in range(size):
+            weights.append(random.uniform(-1,1))
+        print "Initial weights >> %s\n" %(weights)
+        return weights
+
+    def setVector(self, vector):
+        self.vector = vector
+
+    def getVector(self, size):
+        return self.vector
+            
+    def process(self):
+        self.alfa = numpy.dot(self.weights, self.vector)
+        print "Dot Product >> %s\n" % (self.alfa)
+        result = 0 if(self.alfa < 0) else 1
+        return result
+
+    def learn(self, expectedResult):
+        self.expectedResult = expectedResult
+        delta = [((self.expectedResult - self.result) * a ) * self.learningRate for a in self.vector]
+        #self.learningRate -= 0.005
+        #self.lastWeights = self.weights
+        self.weights = [a+b for a,b in zip(self.weights, delta)]
+        print "New weights >> %s\n" %(self.weights)
+        return
+
+    def weightsSum(self, vector, weights, threshold):
+        suma = 0.0
+        for i, value in enumerate(vector):
+            if(int(value) == 1):
+                suma = suma + weights[i]
+        return suma
+
+    def lastResult(self, result):
+        pass
+
+    def start(self, vector):
+        self.setVector(vector)
+        self.result = self.process()
+        print "Neuron responds >> %d\n" %(self.result)
+        return self.result
+
+
+def getVector(size):
+    vector = 0
+    try:
+        vector = raw_input("Vector << ")
+        vector = [float(a) for a in vector.split(" ")]
+    except:
+        print "[X] Error en el vector\n"
+        return 0
+
+    if(vector):
+        if(len(vector) == size):
+            print "Vector >> ", vector
+            vector.append(-1.0)
+            return vector
+        else:
+            print "[X] Error, tamano del vector no coincide\n"
+            return 0
+    else:
+        return 0
+
+def expectedVector(size):
+    vector = 0
+    try:
+        vector = raw_input("Expected reponse << ")
+        vector = [int(a) for a in vector.split(" ")]
+    except:
+        print "[X] Error en el vector\n"
+        return 0
+
+    if(vector):
+        if(len(vector) == size):
+            print "Expected response >> ", vector
+            return vector
+        else:
+            print "[X] Error, tamano del vector no coincide\n"
+            return 0
+    else:
+        return 0
+
+#def getExpectedResult(self):
+#    value = 0
+#    try:
+#        value = int(raw_input("Valor esperado << "))
+#    except:
+#        print "[X] Error en el valor esperado\n"
+#        return 2
+#    if(value < 0 or value > 1):
+#        print "[X] Error en el valor esperado\n"
+#        return 2
+#    else:
+#        return value
+
+
+def main():
+    neuronSize, threshold, learningRate = 0, 0, 0.0 
+    vector = list()
+
+    try:
+        neuronSize = int(sys.argv[1])
+        learningRate = float(sys.argv[2])
+        layerSize = int(sys.argv[3])
+    except:
+        print "[!] Error, se esperan 3 parametros (tamano neurona, tasa de aprendizaje, tamano capa)\n"
+        return
+    finally:
+        if(learningRate < 0.0 or learningRate > 1.0):
+            print "[X] Error tasa de aprendizaje\n"
+            return
+
+    layer = Layer(neuronSize, learningRate, layerSize)
+
+    while(vector != 0):
+        vector = getVector(neuronSize)
+        layer.start(vector)
+
+        expectedValues = expectedVector(layerSize)
+        layer.learn(expectedValues)
+
+    
+if(__name__ == "__main__"):
+    main()
+
+# [!] [?] [X] [O] >> <<
