@@ -9,5 +9,8 @@ def abrirArchivo(nombre):
         i = list(i.split(',')) #Comvertimos en una lista y la imprimimos
     return i
 
+
 archivo =  sys.argv[1]
-print abrirArchivo(archivo)
+listA = abrirArchivo(archivo)
+print listA
+
