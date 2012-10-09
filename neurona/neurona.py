@@ -153,21 +153,21 @@ def main():
 
     try:
         neuronSize = int(sys.argv[1])
-        print "[!] Using neuron size %d" % (neuronSize)
+        print "[1] Using neuron size %d" % (neuronSize)
     except:
         print "[!] Using standar neuron size %s" % ("2")
         neuronSize = 2
         
     try:
         learningRate = float(sys.argv[2])
-        print "[!] Using learning rate %f" % (learningRate)
+        print "[2] Using learning rate %f" % (learningRate)
     except:
         print "[!] Using standar learning rate %s" % ("0.1")
         learningRate = 0.5
 
     try:
         layerSize = int(sys.argv[3])
-        print "[!] Using layer size %d" % (layerSize)
+        print "[3] Using layer size %d" % (layerSize)
     except:
         print "[!] Using standar layer size %s" % ("1")
         layerSize = 2
