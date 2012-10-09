@@ -79,7 +79,7 @@ $(document).ready(function() {
 
 <body>
 
-<form action="readCSV2.php" method="post" enctype="multipart/form-data">
+<form action="index.php" method="post" enctype="multipart/form-data">
   <input name="archivo" type="file" size="35" />
   <input name="enviar" type="submit" value="Upload File" />
   <input name="action" type="hidden" value="upload" />     
