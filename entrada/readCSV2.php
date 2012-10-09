@@ -8,6 +8,18 @@ function dameBool($anterior, $actual)
   else return -1;
 }
 
+function escalar($x, $xmin, $xmax)
+{
+  $lower = -1.0;
+  $first = ($x - $xmin)*2.0;
+  if($first == 0)
+    return 0;
+  $second = ($xmax - $xmin);
+  $third = $first/$second;
+  $result = $lower+$third;
+  return $result;
+}
+
 function createFile($data, $file)
 {
   $file = substr($file, 0, -4); //Al archivo le eliminamos el .csv para quee quede con .txt 
@@ -28,6 +40,7 @@ function readCSV($archivoDestino)
       $listaFechas = array();
 	$anterior = 0;
 	$listaUnosCeros = array();
+
       while (($datos = fgetcsv($gestor, 1000, ",")) !== FALSE) 
 	{
 	  $numero = count($datos);
@@ -36,7 +49,9 @@ function readCSV($archivoDestino)
 	      if(is_numeric($datos[$c]))//Comprobamos que sea numerico
 		{
 		  $listaValores[] = $datos[$c]; //Guardamos las fechas en un arreglo
+
 		  $listaFechas[] = $datos[$c-1];
+
 		$listaUnosCeros[] = dameBool($anterior, $datos[$c]);
 		$anterior = $datos[$c];
 		}
@@ -47,7 +62,7 @@ function readCSV($archivoDestino)
 	
 	//$unos = implode(",",$listaUnosCeros);
       $_SESSION['unosceros'] = implode(",",$listaUnosCeros);
-      return array($fileName, $listaValores, $listaFechas);
+      return array($fileName, $listaValores, $listaFechas, $listaEscalada);
     }
 }
 
@@ -55,6 +70,11 @@ function callPython($fileName)
 {
   return ($python = exec("python a.py $fileName"))? $python : False; //Valor ternario
   //print "<br/>salida python: <br/><b>".exec("python a.py $fileName")."</b><br/><br/>";
+}
+
+function callNormalizar($fileName)
+{
+  return ($python = exec("python escalar.py $fileName"))? $python : False; //Valor ternario
 }
 
 function uploadFile()
@@ -101,10 +121,31 @@ if ($_POST["action"] == "upload")
 $archivoLimpio = readCSV($archivoDestino); //Pasamos el archivo CSV a un .txt que es una simple lista //Regresa un array de dos elementos, destino y la lista de los elementos
 $valoresY = implode(",",$archivoLimpio[1]);
 $valoresX = implode(",",$archivoLimpio[2]); //El de las fechas
+
+/*$max = max($archivoLimpio[1]); //Escalar en php es mala idea..!
+//$min = min($archivoLimpio[1]);
+$min = "0";
+$escalada = $archivoLimpio[1];
+$nueva = array();
+//echo implode(",", $escalada)."<br/>";
+//echo $max."..".$min."..";
+
+for($i = 0; $i < count($escalada); $i++)
+{
+  //echo "".$escalada[$i]."...";
+  $nueva[] = escalar($escalada[$i], $min, $max);
+}
+
+echo implode(",",$nueva);*/
+
 $totalE = count($archivoLimpio[1]);
 $run = callPython($archivoLimpio[0]); //corremos el archivo de python 
+
+$normalizar = callNormalizar($archivoLimpio[0]); //corremos el archivo de python 
 //echo $run."<br/>";
 if($run) $_SESSION['python'] = $run;
+
+if($normalizar) $_SESSION['unosceros'] = $normalizar;
 
 $bandera = True;
 }
@@ -250,7 +291,6 @@ text-shadow: 0px 0px 4px white;
 <body>
 
 <h1>Predicciones de Crimenes</h1>
-<?php echo $_SESSION['unosceros']; ?>
 <fieldset class="fieldset2">
 <legend class="legend1" >Subir Archivo</legend>
 <form action="readCSV2.php" method="post" enctype="multipart/form-data">
@@ -262,7 +302,7 @@ text-shadow: 0px 0px 4px white;
 
 <table>
 <tr>
-<td rowspan="2">
+<td rowspan="3">
 <fieldset class="fieldset3">
 <legend class="legend1">Grafica</legend>
 <div id="graficaDescarga" style="height: 400px; width:600px; margin: 0 auto"></div>
@@ -271,9 +311,16 @@ text-shadow: 0px 0px 4px white;
 </td>
 <td>
 <fieldset class="fieldset1">
+<legend class="legend1">Pre-procesamiento</legend>
+<?php echo "Prepocesamiento:<br/>".$_SESSION['unosceros']; ?></fieldset>
+</fieldset>
+</td>
+</tr>
+<tr>
+<td>
+<fieldset class="fieldset1">
 <legend class="legend1">Estatus</legend>
 <?php echo "Estatus: ".$_SESSION['status']; ?>
-</fieldset>
 </td>
 </tr>
 <tr>
