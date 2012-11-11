@@ -25,15 +25,31 @@ def lista(list2):
     #list2 = ['1926020', '1857670', '1798792', '1688540', '1636096','1533887', '1426044', '1425486', '1439480', '1423677', '1383676', '1360088', '1390745', '1435951', '1421990', '1392629','1318398']
     maximo = max(list2)
     minimo = min(list2)
+    #minimo = 0
     a = list();
     for i in list2:
 #        print nomalizar(float(i), float(minimo), float(maximo))
         a.append(nomalizar(float(i), float(minimo), float(maximo)))
     return a
 
+def escalar(a):
+    a = [1926020, 1857670, 1798792, 1688540, 1636096, 1533887, 1426044, 1425486, 1439480, 1423677, 1383676, 1360088, 1390745, 1435951, 1421990, 1392629, 1318398] #Esto hay que quitarlo
+
+    b = list()
+    minA = min(a)
+    maxA = max(a)
+
+    den = maxA - minA
+
+    for i in a:
+        num = i - minA
+        r = float(num) / float(den)
+        b.append(r)
+    return b
 
 archivo =  sys.argv[1]
 listA = abrirArchivo(archivo)
 #print listA
-print lista(listA)
+#print lista(listA) #Esta es cuando queremos normalizar con -1 y 1
+print escalar(listA) #Este es para sacar de 0 a 1
 #print lista()
