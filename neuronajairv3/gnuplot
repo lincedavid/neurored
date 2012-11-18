@@ -1,0 +1,2 @@
+plot ((0.04508736 - -0.13296953*(x)) / (0.12341081)) with lines lw 1 lt 3 title "Condicion", 'ceroscorrectos.dat' u 1:2 w points pt 1 lt 1, 'cerosincorrectos.dat' u 1:2 w points pt 2 lt 2, 'unoscorrectos.dat' u 1:2 w point pt 3 lt 3, 'unosincorrectos.dat' u 1:2 w points pt 5 lt 1
+
