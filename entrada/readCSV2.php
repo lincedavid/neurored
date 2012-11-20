@@ -1,5 +1,5 @@
 <?php
-
+//
 $bandera = False; //Banderilla de si activamos el Query
 
 function dameBool($anterior, $actual)
