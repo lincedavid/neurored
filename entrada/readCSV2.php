@@ -122,22 +122,6 @@ $archivoLimpio = readCSV($archivoDestino); //Pasamos el archivo CSV a un .txt qu
 $valoresY = implode(",",$archivoLimpio[1]);
 $valoresX = implode(",",$archivoLimpio[2]); //El de las fechas
 
-/*$max = max($archivoLimpio[1]); //Escalar en php es mala idea..!
-//$min = min($archivoLimpio[1]);
-$min = "0";
-$escalada = $archivoLimpio[1];
-$nueva = array();
-//echo implode(",", $escalada)."<br/>";
-//echo $max."..".$min."..";
-
-for($i = 0; $i < count($escalada); $i++)
-{
-  //echo "".$escalada[$i]."...";
-  $nueva[] = escalar($escalada[$i], $min, $max);
-}
-
-echo implode(",",$nueva);*/
-
 $totalE = count($archivoLimpio[1]);
 $run = callPython($archivoLimpio[0]); //corremos el archivo de python 
 
@@ -212,6 +196,7 @@ $(document).ready(function() {
 	  name: 'Votos',
 	      //data: [50,34,32,23,23,22,20,19,18,10],
 	      data: [<?php echo $valoresY; ?>], //imprimimos la cantidad de criminalidad actual
+	      //data: <?php echo $_SESSION['unosceros']; ?>, //imprimimos la cantidad de criminalidad actual
 	      dataLabels: {
 	    enabled: true,
 		rotation: -90,
@@ -357,9 +342,6 @@ if($_SESSION['status'] && $_SESSION['python']){
   </td>-->
   <!--</tr>
   </table>-->
-
-<!--<div id="graficaDescarga" style="height: 100%; width:100%; margin: 0 auto"></div>-->
-
 
 </body>
 </html>
