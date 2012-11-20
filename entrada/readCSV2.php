@@ -62,7 +62,7 @@ function readCSV($archivoDestino)
 	
 	//$unos = implode(",",$listaUnosCeros);
       $_SESSION['unosceros'] = implode(",",$listaUnosCeros);
-      return array($fileName, $listaValores, $listaFechas, $listaEscalada);
+      return array($fileName, $listaValores, $listaFechas);//, $listaEscalada);
     }
 }
 
@@ -110,9 +110,10 @@ function uploadFile()
 }
 
 //function main()
-if ($_POST["action"] == "upload")
-{
-  $archivoDestino =  uploadFile(); //Subimos el archivo CVS
+//if ($_POST["action"] == "upload")
+//{
+
+$archivoDestino =  '0d3054_crimes-recorded-by-the-police.csv';//uploadFile(); //Subimos el archivo CVS
   if(!$archivoDestino)
     {
       die();
@@ -121,22 +122,6 @@ if ($_POST["action"] == "upload")
 $archivoLimpio = readCSV($archivoDestino); //Pasamos el archivo CSV a un .txt que es una simple lista //Regresa un array de dos elementos, destino y la lista de los elementos
 $valoresY = implode(",",$archivoLimpio[1]);
 $valoresX = implode(",",$archivoLimpio[2]); //El de las fechas
-
-/*$max = max($archivoLimpio[1]); //Escalar en php es mala idea..!
-//$min = min($archivoLimpio[1]);
-$min = "0";
-$escalada = $archivoLimpio[1];
-$nueva = array();
-//echo implode(",", $escalada)."<br/>";
-//echo $max."..".$min."..";
-
-for($i = 0; $i < count($escalada); $i++)
-{
-  //echo "".$escalada[$i]."...";
-  $nueva[] = escalar($escalada[$i], $min, $max);
-}
-
-echo implode(",",$nueva);*/
 
 $totalE = count($archivoLimpio[1]);
 $run = callPython($archivoLimpio[0]); //corremos el archivo de python 
@@ -148,9 +133,9 @@ if($run) $_SESSION['python'] = $run;
 if($normalizar) $_SESSION['unosceros'] = $normalizar;
 
 $bandera = True;
-}
+//}
 
-else $bandera = False;
+//else $bandera = False;
 
 
 ?>
@@ -181,7 +166,6 @@ $(document).ready(function() {
 	text: 'Indice de Criminalidad'//Aqui va el titulo 
 	    },
 	  xAxis: {
-	  //categories: [ 'Rollo Durazno','Pay de Queso','Ensueño Mango Mango','Rollo de Mango Jr.','Pastel Mechudo','Rollo Durazno Jr.','Rollo de Piña Jr.','Rollo de Fresa','Rollo de Cajeta','Rollo de Mango' ],
 	  categories: [ <?php echo $valoresX; ?>],
 	    labels: {
 	  rotation: -45,
@@ -197,7 +181,7 @@ $(document).ready(function() {
 	  yAxis: {
 	min: 0,
 	    title: {
-	  text: 'Criminalidad' //Va lo de crimen //'Cantidad de Votos'
+	  text: 'Criminalidad' //Va lo de crimen 
 	      }
 	},
 	  legend: {
@@ -205,13 +189,128 @@ $(document).ready(function() {
 	    },
 	  tooltip: {
 	formatter: function() {
-	    return '<b>'+ this.x +'</b><br/>'+'Votos:'+ this.y+ '';
+	    return '<b>'+ this.x +'</b><br/>'+'Criminalidad:'+ this.y+ '';
 	  }
 	},
 	  series: [{
 	  name: 'Votos',
-	      //data: [50,34,32,23,23,22,20,19,18,10],
 	      data: [<?php echo $valoresY; ?>], //imprimimos la cantidad de criminalidad actual
+	      //data: <?php echo $_SESSION['unosceros']; ?>, //imprimimos la cantidad de criminalidad actual
+	      dataLabels: {
+	    enabled: true,
+		rotation: -90,
+		color: '#FFFFFF',
+		align: 'right',
+		x: -3,
+		y: <?php echo $totalE; ?>,
+		formatter: function() {
+		return this.y;
+	      },
+		style: {
+	      font: 'normal 13px Verdana, sans-serif'
+		  }
+	    }
+	  }]
+	  });
+
+    chart = new Highcharts.Chart({
+      chart: {
+	renderTo: 'graficaPostProcesamiento',
+	    type: 'column',
+	    margin: [ 50, 50, 100, 80]
+	    },
+	  title: {
+	text: 'Indice de Criminalidad'//Aqui va el titulo 
+	    },
+	  xAxis: {
+	  categories: [ <?php echo $valoresX; ?>],
+	    labels: {
+	  rotation: -45,
+	      align: 'right',
+	      style: {
+	    font: 'normal 10px Verdana, sans-serif'
+		}
+	  }
+	},
+	  credits: {
+	enabled: false
+	    },
+	  yAxis: {
+	min: 0,
+	    title: {
+	  text: 'Criminalidad' //Va lo de crimen
+	      }
+	},
+	  legend: {
+	enabled: false
+	    },
+	  tooltip: {
+	formatter: function() {
+	    return '<b>'+ this.x +'</b><br/>'+'Criminalidad:'+ this.y+ '';
+	  }
+	},
+	  series: [{
+	  name: 'Votos',
+	      //data: [<?php echo $valoresY; ?>], //imprimimos la cantidad de criminalidad actual
+	      data: <?php echo $_SESSION['unosceros']; ?>, //imprimimos la cantidad de criminalidad actual
+	      dataLabels: {
+	    enabled: true,
+		rotation: -90,
+		color: '#FFFFFF',
+		align: 'right',
+		x: -3,
+		y: <?php echo $totalE; ?>,
+		formatter: function() {
+		return this.y;
+	      },
+		style: {
+	      font: 'normal 13px Verdana, sans-serif'
+		  }
+	    }
+	  }]
+	  });
+
+
+    chart = new Highcharts.Chart({
+      chart: {
+	renderTo: 'graficaProcesamiento',
+	    type: 'column',
+	    margin: [ 50, 50, 100, 80]
+	    },
+	  title: {
+	text: 'Indice de Criminalidad'//Aqui va el titulo 
+	    },
+	  xAxis: {
+	  categories: [ <?php echo $valoresX; ?>],
+	    labels: {
+	  rotation: -45,
+	      align: 'right',
+	      style: {
+	    font: 'normal 10px Verdana, sans-serif'
+		}
+	  }
+	},
+	  credits: {
+	enabled: false
+	    },
+	  yAxis: {
+	min: 0,
+	    title: {
+	  text: 'Criminalidad' //Va lo de crimen 
+	      }
+	},
+	  legend: {
+	enabled: false
+	    },
+	  tooltip: {
+	formatter: function() {
+	    return '<b>'+ this.x +'</b><br/>'+'Criminalidad:'+ this.y+ '';
+	  }
+	},
+	  series: [{
+	  name: 'Votos',
+	      //data: [<?php echo $valoresY; ?>], //imprimimos la cantidad de criminalidad actual
+	      data: <?php echo $_SESSION['unosceros']; ?>, //imprimimos la cantidad de criminalidad actual
 	      dataLabels: {
 	    enabled: true,
 		rotation: -90,
@@ -229,6 +328,7 @@ $(document).ready(function() {
 	    }
 	  }]
 	  });
+
   });
 
 </script> 
@@ -319,8 +419,8 @@ text-shadow: 0px 0px 4px white;
 <tr>
 <td>
 <fieldset class="fieldset1">
-<legend class="legend1">Estatus</legend>
-<?php echo "Estatus: ".$_SESSION['status']; ?>
+<legend class="legend1">Estatus</legend><!--Mandamos el mensaje del archivo subido con exito-->
+<?php echo "Estatus: Se cargo con exito";//echo "Estatus: ".$_SESSION['status']; ?>
 </td>
 </tr>
 <tr>
@@ -330,36 +430,24 @@ text-shadow: 0px 0px 4px white;
 <?php echo "Salida Python:<br/>".$_SESSION['python']; ?></fieldset>
 </td>
 </tr>
+</table>
 
-
-<!--<table border'1'>
+<table size = 100%>
 <tr>
-  <td width="50%" rowpan="2">
-    <div id="graficaDescarga" style="height: 400px; width:600px; margin: 0 auto"></div>
-  </td>
-  
-<?php 
-if($_SESSION['status'] && $_SESSION['python']){
-	echo "<td>Estatus: ".$_SESSION['status']."</td>";	
-	echo "<tr><td>Salida Python:<br/>".$_SESSION['python']."</td></tr>";	
-}
-?>
-
- <!--</tr>-->
-  <!--<div id="graficaDescarga" style="height: 80%; width:100%; margin: 0 auto"></div>
-  <div id="graficaDescarga" style="height: 400px; width:600px; margin: 0 auto"></div>-->
-
-  <!--</td>-->
-  <!--</tr>
-  <tr>
-  <td colspan="2">
-  <div id="graficaPie" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
-  </td>-->
-  <!--</tr>
-  </table>-->
-
-<!--<div id="graficaDescarga" style="height: 100%; width:100%; margin: 0 auto"></div>-->
-
+<td>
+<fieldset class="fieldset3">
+<legend class="legend1">Pre-Procesamiento</legend>
+<div id="graficaProcesamiento" style="height: 400px; width:600px; margin: 0 auto"></div>
+</fieldset>
+</td>
+<td>
+<fieldset class="fieldset3">
+<legend class="legend1">Post-Procesamiento</legend>
+<div id="graficaPostProcesamiento" style="height: 400px; width:600px; margin: 0 auto"></div>
+</fieldset>
+</td>
+</tr>
+<table>
 
 </body>
 </html>
