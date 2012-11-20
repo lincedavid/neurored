@@ -2,6 +2,44 @@
 
 include('readTxt.php');
 
+function main()
+{
+	$archivo = 'csvDelitos.csv';
+
+	if($_POST["action"] == "upload")
+	//if($_POST["archivo"])
+	{
+		if (copy($_FILES['archivo']['tmp_name'],"files/txt/".$archivo)){
+			$status = "Archivo subido: <b>".$archivo."</b>";
+			$bStatus = True;
+		} else {
+			$status = "Error al subir el archivo";
+		}	
+	}
+
+	$listaValores = readCSV($archivo);
+
+	$_SESSION['fecha'] = $listaValores[0]; //array
+	$_SESSION['valores'] = $listaValores[1]; //array
+
+	$fileFechas = createFile('fechas', $listaValores[0]); //creamos archivo de fechas
+	$fileValores = createFile('valores', $listaValores[1]); //creamos archivo de valores
+
+	//echo '<br/>'.implodeFecha();
+	//echo '<br/>'.implodeValores();
+	//echo '<br/>'.countValores();
+
+	//echo '<br/>'.callPython($fileValores);
+	//echo '<br/>'.callNormalizar($fileValores);
+	$_SESSION['normalizar'] = callNormalizar($fileValores);	//String
+
+	unlink('files/txt/'.$archivo); //eliminamos el archivo creado
+	createCSV($archivo, $listaValores[2]);
+}
+
+
+main();
+
 ?>
 
 <html>
@@ -28,15 +66,20 @@ $(document).ready(function() {
 	  title: {
 	text: 'Indice de Criminalidad'//Aqui va el titulo 
 	    },
-	  xAxis: {
-	  categories: [ <?php echo implodeValores(); ?>],
+	  /*xAxis: {
+	  categories: [ <?php echo implodeFecha(); ?>],
 	    labels: {
 	  rotation: -45,
 	      align: 'right',
 	      style: {
 	    font: 'normal 10px Verdana, sans-serif'
 		}
-	  }
+	  }*/
+	xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: {
+                month: '%b \'%y'   
+            }
 	},
 	  credits: {
 	enabled: false
@@ -44,7 +87,7 @@ $(document).ready(function() {
 	  yAxis: {
 	min: 0,
 	    title: {
-	  text: 'Criminalidad' //Va lo de crimen 
+	  text: 'Cantidad' //Va lo de crimen 
 	      }
 	},
 	  legend: {
@@ -52,12 +95,15 @@ $(document).ready(function() {
 	    },
 	  tooltip: {
 	formatter: function() {
-	    return '<b>'+ this.x +'</b><br/>'+'Criminalidad:'+ this.y+ '';
+	    return '<b>'+ this.x +'</b><br/>'+'Cantidad:'+ this.y+ '';
 	  }
 	},
 	  series: [{
 	  name: 'Votos',
 	      data: [<?php echo implodeValores(); ?>], //imprimimos la cantidad de criminalidad actual
+		pointStart: Date.UTC(1966, 0),
+            pointInterval: 24 * 3600 * 1000 *7 *4, // una semana
+
 	      dataLabels: {
 	    enabled: true,
 		rotation: -90,
@@ -85,14 +131,10 @@ $(document).ready(function() {
 	text: 'Indice de Criminalidad'//Aqui va el titulo 
 	    },
 	  xAxis: {
-	  categories: [ <?php echo implodeFecha(); ?>],
-	    labels: {
-	  rotation: -45,
-	      align: 'right',
-	      style: {
-	    font: 'normal 10px Verdana, sans-serif'
-		}
-	  }
+            type: 'datetime',
+            dateTimeLabelFormats: {
+                month: '%b \'%y'   
+            }
 	},
 	  credits: {
 	enabled: false
@@ -100,7 +142,7 @@ $(document).ready(function() {
 	  yAxis: {
 	min: 0,
 	    title: {
-	  text: 'Criminalidad' //Va lo de crimen
+	  text: 'Cantidad' //Va lo de crimen
 	      }
 	},
 	  legend: {
@@ -108,12 +150,14 @@ $(document).ready(function() {
 	    },
 	  tooltip: {
 	formatter: function() {
-	    return '<b>'+ this.x +'</b><br/>'+'Criminalidad:'+ this.y+ '';
+	    return '<b>'+ this.x +'</b><br/>'+'Cantidad:'+ this.y+ '';
 	  }
 	},
 	  series: [{
 	  name: 'Votos',
 	      data: [<?php echo $_SESSION['normalizar']; ?>], //imprimimos la cantidad de criminalidad actual
+	pointStart: Date.UTC(1966, 0),
+            pointInterval: 24 * 3600 * 1000 *7 *4, // una semana
 	      dataLabels: {
 	    enabled: true,
 		rotation: -90,
@@ -142,14 +186,10 @@ $(document).ready(function() {
 	text: 'Indice de Criminalidad'//Aqui va el titulo 
 	    },
 	  xAxis: {
-	  categories: [ <?php echo implodeFecha(); ?>],
-	    labels: {
-	  rotation: -45,
-	      align: 'right',
-	      style: {
-	    font: 'normal 10px Verdana, sans-serif'
-		}
-	  }
+            type: 'datetime',
+            dateTimeLabelFormats: {
+                month: '%b \'%y'   
+            }
 	},
 	  credits: {
 	enabled: false
@@ -157,7 +197,7 @@ $(document).ready(function() {
 	  yAxis: {
 	min: 0,
 	    title: {
-	  text: 'Criminalidad' //Va lo de crimen 
+	  text: 'Cantidad' //Va lo de crimen 
 	      }
 	},
 	  legend: {
@@ -165,12 +205,14 @@ $(document).ready(function() {
 	    },
 	  tooltip: {
 	formatter: function() {
-	    return '<b>'+ this.x +'</b><br/>'+'Criminalidad:'+ this.y+ '';
+	    return '<b>'+ this.x +'</b><br/>'+'Cantidad:'+ this.y+ '';
 	  }
 	},
 	  series: [{
 	  name: 'Votos',
 	      data: [<?php echo $_SESSION['normalizar']; ?>], //imprimimos la cantidad de criminalidad actual
+	pointStart: Date.UTC(1966, 0),
+            pointInterval: 24 * 3600 * 1000 *7 *4, // una semana
 	      dataLabels: {
 	    enabled: true,
 		rotation: -90,
@@ -250,14 +292,14 @@ text-shadow: 0px 0px 4px white;
 <body>
 
 <h1>Predicciones de Crimenes</h1>
-<!--<fieldset class="fieldset2">
+<fieldset class="fieldset2">
 <legend class="legend1" >Subir Archivo</legend>
-<form action="readCSV2.php" method="post" enctype="multipart/form-data">
+<form action="index.php" method="post" enctype="multipart/form-data">
   <input name="archivo" type="file" size="35" />
   <input name="enviar" type="submit" value="Upload File" />
   <input name="action" type="hidden" value="upload" />     
 </form>
-</fieldset>-->
+</fieldset>
 
 <table>
 <tr>

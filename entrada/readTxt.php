@@ -3,9 +3,12 @@
 function readCSV($archivoDestino)
 {
 	$arrResult = array();
-	$handle = fopen("files/txt/$archivoDestino", "r");
+	$handle = fopen("files/txt/$archivoDestino", "rb");
 	if( $handle ) {
 		$listaFechas = array();
+//		$listaYear = array();
+//		$listaMonth = array();
+
 		$listaValores = array();
 		$listaJunta = array();
 
@@ -20,6 +23,18 @@ function readCSV($archivoDestino)
 		for ($c = 0; $c < count($arrResult); $c++)
 		{
 			$listaFechas[] = $arrResult[$c][0]; //Fechas
+			
+/*			//add			
+			$year = substr($arrResult[$c][0], 0, -3);
+			//$listaYear[] = substr($year, -2)
+			$year = substr($year, -2)
+
+			$month = (int)substr($arrResult[$c][0], -2);
+			//$listaMonth[] = date("F", mktime(0, 0, 0, $month, 10));
+			$month = date("F", mktime(0, 0, 0, $month, 10));
+			$listaMonth[] = '$month \'$year';
+			//end add
+*/
 			$listaValores[] = $arrResult[$c][1]; //Valores
 			$listaJunta[] = array($arrResult[$c][0], $arrResult[$c][1]);
 
@@ -68,6 +83,16 @@ function callNormalizar($fileName)
 	return ($python = exec("python escalar.py $fileName"))? $python : False; //Valor ternario
 }
 
+function minValores()
+{
+	return min($_SESSION['valores']);
+}
+
+function maxValores()
+{
+	return max($_SESSION['valores']);
+}
+
 function createFile($file, $data)
 {
 	//$file = substr($file, 0, -4); //Al archivo le eliminamos el .csv para quee quede con .txt 
@@ -79,9 +104,22 @@ function createFile($file, $data)
 	return $fileName;
 }
 
-function main()
+/*function main()
 {
-	$archivo = 'csvDelitos.csv';
+	//$archivo = 'csvDelitos.csv';
+	$archivo = 'robo.csv';
+
+	/*if($_POST["action"] == "upload")
+	//if($_POST["archivo"])
+	{
+		if (copy($_FILES['archivo']['tmp_name'],"files/csv/".$archivo)){
+			$status = "Archivo subido: <b>".$archivo."</b>";
+			$bStatus = True;
+		} else {
+			$status = "Error al subir el archivo";
+		}	
+	}*/
+/*
 	$listaValores = readCSV($archivo);
 
 	$_SESSION['fecha'] = $listaValores[0]; //array
@@ -95,12 +133,13 @@ function main()
 	echo '<br/>'.countValores();
 
 	//echo '<br/>'.callPython($fileValores);
-	echo '<br/>'.callNormalizar($fileValores);
-	
-	unlink('files/txt/'.$archivo); //eliminamos el archivo creado
-	createCSV($archivo, $listaValores[2]);
+	//echo '<br/>'.callNormalizar($fileValores);
+	$_SESSION['normalizar'] = callNormalizar($fileValores);	//String
+
+	//unlink('files/txt/'.$archivo); //eliminamos el archivo creado
+	//createCSV($archivo, $listaValores[2]);
 }
 
-main();
+main();*/
 
 ?>
