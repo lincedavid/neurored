@@ -196,6 +196,7 @@ $(document).ready(function() {
 	  name: 'Votos',
 	      data: [<?php echo $valoresY; ?>], //imprimimos la cantidad de criminalidad actual
 	      //data: <?php echo $_SESSION['unosceros']; ?>, //imprimimos la cantidad de criminalidad actual
+<<<<<<< HEAD
 	      dataLabels: {
 	    enabled: true,
 		rotation: -90,
@@ -311,6 +312,8 @@ $(document).ready(function() {
 	  name: 'Votos',
 	      //data: [<?php echo $valoresY; ?>], //imprimimos la cantidad de criminalidad actual
 	      data: <?php echo $_SESSION['unosceros']; ?>, //imprimimos la cantidad de criminalidad actual
+=======
+>>>>>>> 3706b106294ea06972256a9d7f20add5c7f1e21a
 	      dataLabels: {
 	    enabled: true,
 		rotation: -90,
@@ -434,6 +437,7 @@ text-shadow: 0px 0px 4px white;
 
 <table size = 100%>
 <tr>
+<<<<<<< HEAD
 <td>
 <fieldset class="fieldset3">
 <legend class="legend1">Pre-Procesamiento</legend>
@@ -448,6 +452,31 @@ text-shadow: 0px 0px 4px white;
 </td>
 </tr>
 <table>
+=======
+  <td width="50%" rowpan="2">
+    <div id="graficaDescarga" style="height: 400px; width:600px; margin: 0 auto"></div>
+  </td>
+  
+<?php 
+if($_SESSION['status'] && $_SESSION['python']){
+	echo "<td>Estatus: ".$_SESSION['status']."</td>";	
+	echo "<tr><td>Salida Python:<br/>".$_SESSION['python']."</td></tr>";	
+}
+?>
+
+ <!--</tr>-->
+  <!--<div id="graficaDescarga" style="height: 80%; width:100%; margin: 0 auto"></div>
+  <div id="graficaDescarga" style="height: 400px; width:600px; margin: 0 auto"></div>-->
+
+  <!--</td>-->
+  <!--</tr>
+  <tr>
+  <td colspan="2">
+  <div id="graficaPie" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+  </td>-->
+  <!--</tr>
+  </table>-->
+>>>>>>> 3706b106294ea06972256a9d7f20add5c7f1e21a
 
 </body>
 </html>
